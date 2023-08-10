@@ -37,6 +37,7 @@ ES_t ADC_enuInit(void)
 #if ADC_ADJUSTMENT==LEFT_ADj
 	ADMUX|=(1<<5);
 #elif ADC_ADJUSTMENT==RIGHT_ADJ
+	ADMUX&=~(1<<5);
 #else
 #error "WRONG ADJUSTMENT"
 #endif
@@ -81,7 +82,7 @@ ES_t ADC_enuPollingSystem(void)//waiting for flag to be set
 {
 	ES_t Local_enuErrorStates=ES_NOK;
 	//wait for ADC interrupt flag
-	while(((ADCSRA>>4)&1)==0);
+	while(!((ADCSRA>>4)&1));
 	ADCSRA|=(1<<4);
 
 	return Local_enuErrorStates;
@@ -127,11 +128,12 @@ ES_t ADC_enuSelectChannel(u8 Copy_u8Channel_ID)
 {
 	ES_t Local_enuErrorStates=ES_NOK;
 
-	if(Copy_u8Channel_ID<32)
+	if(Copy_u8Channel_ID<=7)
 	{
 	    //masking bits for 0 to 4
 	    ADMUX &=~ 0x1F;
 	    ADMUX|= Copy_u8Channel_ID;
+	    Local_enuErrorStates=ES_OK;
 	}
 	else
 	{
@@ -144,12 +146,16 @@ ES_t ADC_enuEnable(void)
 {
 	ES_t Local_enuErrorStates=ES_NOK;
 
+	ADCSRA|=(1<<7);
+
 	return Local_enuErrorStates;
 }
 
 ES_t ADC_enuDisable(void)
 {
 	ES_t Local_enuErrorStates=ES_NOK;
+
+	ADCSRA &=~(1<<7);
 
 	return Local_enuErrorStates;
 }

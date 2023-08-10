@@ -8,7 +8,7 @@
 #ifndef MCAL_ADC_ADC_CONFIG_H_
 #define MCAL_ADC_ADC_CONFIG_H_
 
-#define ADC_PRES               PRES_64
+#define ADC_PRES               PRES_128
 
 #define ADC_REF_VOLT           AVCC_REF
 
